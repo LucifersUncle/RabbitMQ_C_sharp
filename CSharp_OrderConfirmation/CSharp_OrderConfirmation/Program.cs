@@ -24,7 +24,7 @@ namespace CSharp_OrderConfirmation
                 {
                     var body = ea.Body.ToArray();
                     var message = Encoding.UTF8.GetString(body);
-                    Console.WriteLine(" Recervation for {0} confirmed", message);
+                    Console.WriteLine("" + message);
                 };
                 channel.BasicConsume(queue: "ConfirmationQueue",
                                      autoAck: true,

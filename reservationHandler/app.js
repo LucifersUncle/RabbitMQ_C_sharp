@@ -108,7 +108,7 @@ function startWorker() {
             {
               myHotel.Rented = true;
               await myHotel.save();
-              sendConfirmation(hotelReservation.name);   
+              sendConfirmation(hotelReservation);   
             }   
             
             ch.ack(msg);               
@@ -126,18 +126,18 @@ function startWorker() {
 
 function sendNoHotelWithSpecifiedRoom(hotelReservation)
 {  
-  publish("ConfirmationExchange", "", new Buffer.from(hotelReservation.name + "does not exist"));
+  publish("ConfirmationExchange", "", new Buffer.from(hotelReservation.name + " does not exist"));
   console.log("Hotel does not exist");
 }
 
 function sendHotelRoomReserved(hotelReservation)
 {
-  publish("ConfirmationExchange", "", new Buffer.from("Room: " + hotelReservation.number + "in hotel: " + hotelReservation.name + "is reserved"));
+  publish("ConfirmationExchange", "", new Buffer.from("Room: " + hotelReservation.number + " in hotel: " + hotelReservation.name + " is reserved"));
   console.log("Room is already reserved");
 }
 
 function sendConfirmation(hotelReservation) {
-    publish("ConfirmationExchange", "", new Buffer.from("Room: " + hotelReservation.number + "in hotel: " + hotelReservation.name + "has been reserved"));
+    publish("ConfirmationExchange", "", new Buffer.from("Room: " + hotelReservation.number + " in hotel: " + hotelReservation.name + " has been reserved"));
     console.log("Confirmation sent");
 };
 
