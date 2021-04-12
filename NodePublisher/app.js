@@ -35,7 +35,12 @@ function whenConnected() {
   startPublisher();
         rl.question("Welcome to the Node reservation system, which hotel would you like to make a reservation at? : ", function(answer)
         {
-            makeReservation(answer);
+          var hotelname = answer;
+          rl.question("Which room number? ", function(answer)
+          {
+            makeReservation(hotelname,answer);
+          })
+          
         });
 }
 
@@ -76,9 +81,15 @@ function publish(exchange, routingKey, content) {
   }
 }
 
-function makeReservation(hotelName) {
+function makeReservation(hotelName, hotelnum) {
 
-    publish("ReservationsExchange", "", new Buffer.from(hotelName));
+      var hotel = { 
+        name : hotelName,
+        number : hotelnum
+    };
+
+    var jsonString = JSON.stringify(hotel);
+    publish("ReservationsExchange", "", new Buffer.from(jsonString));
     console.log("Reservation sent, await confirmation from confirmation system - Goodbye");
 };
 
