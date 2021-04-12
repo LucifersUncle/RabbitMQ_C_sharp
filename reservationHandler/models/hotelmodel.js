@@ -4,7 +4,9 @@ const Schema = mongoose.Schema;
 //Define a schema
 
 const hotelSchema = new Schema({
-  Name: String
+  Name: String,
+  Roomnummer: Number,
+  Rented: Boolean   
 });
 
 const Hotel = mongoose.model("Hotel", hotelSchema, "hotelscollection");

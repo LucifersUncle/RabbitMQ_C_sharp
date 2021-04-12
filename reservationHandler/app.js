@@ -92,13 +92,27 @@ function startWorker() {
      function processMsg (msg) {
       work(msg, async function(ok) {
         try {
-          if (ok){                    
-
-            var hotelFromMsg = msg.content.toString();
-            await hotel.create({Name: hotelFromMsg});
+          if (ok){
+            const hotelReservation = JSON.parse(msg.content);
+            var myHotel = await hotel.findOne({Name: hotelReservation.name, RoomNumber: hotelReservation.number})
+                 
+            if(myHotel === null)
+            {
+              sendNoHotelWithSpecifiedRoom(hotelReservation);              
+            }
+            else if(myHotel.Rented == true)
+            {
+              sendHotelRoomReserved(hotelReservation);
+            }
+            else 
+            {
+              myHotel.Rented = true;
+              await myHotel.save();
+              sendConfirmation(hotelReservation.name);   
+            }   
             
-            sendConfirmation(hotelFromMsg);            
-            ch.ack(msg);
+            ch.ack(msg);               
+
         }
           else
             ch.reject(msg, true);
@@ -110,10 +124,20 @@ function startWorker() {
   });
 }
 
+function sendNoHotelWithSpecifiedRoom(hotelReservation)
+{  
+  publish("ConfirmationExchange", "", new Buffer.from(hotelReservation.name + "does not exist"));
+  console.log("Hotel does not exist");
+}
 
-function sendConfirmation(hotelName) {
+function sendHotelRoomReserved(hotelReservation)
+{
+  publish("ConfirmationExchange", "", new Buffer.from("Room: " + hotelReservation.number + "in hotel: " + hotelReservation.name + "is reserved"));
+  console.log("Room is already reserved");
+}
 
-    publish("ConfirmationExchange", "", new Buffer.from(hotelName));
+function sendConfirmation(hotelReservation) {
+    publish("ConfirmationExchange", "", new Buffer.from("Room: " + hotelReservation.number + "in hotel: " + hotelReservation.name + "has been reserved"));
     console.log("Confirmation sent");
 };
 

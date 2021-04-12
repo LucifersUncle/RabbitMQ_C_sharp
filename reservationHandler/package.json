@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "amqplib": "^0.7.1",
+    "dotenv": "^8.2.0",
     "mongoose": "^5.12.3"
   }
 }
